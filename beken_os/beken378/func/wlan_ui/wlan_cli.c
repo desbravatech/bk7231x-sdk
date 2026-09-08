@@ -2142,6 +2142,7 @@ static void adc_command(char *pcWriteBuffer, int xWriteBufferLen, int argc, char
         }
 
         saradc_handle = ddev_open(SARADC_DEV_NAME, &status, (UINT32)p_ADC_drv_desc);
+        bk_printf("wlan_cli call adc\n");
 
         while (1)
         {

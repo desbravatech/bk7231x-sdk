@@ -37,6 +37,7 @@ static unsigned char g_adc_init[ADC_DEV_CHANNEL_SUM] = {FALSE};
 static unsigned char adc_ch_nums = 0;   // ʵ��ʹ�õ�ͨ����
 static unsigned short read_adc_buf[ADC_BUF_SIZE_MAX];  //���read buf size 255
 
+
 typedef UINT16 heap_t;
 
 /**
@@ -281,7 +282,8 @@ OPERATE_RET tkl_adc_read_single_channel(TUYA_ADC_NUM_E port_num, uint8_t ch_id, 
         adc_desc.data_buff_size = ADC_BUF_MEDIAN_SIZE;
     }
     
-    adc_hdl = ddev_open(SARADC_DEV_NAME, &status, (unsigned int)&adc_desc); 
+    adc_hdl = ddev_open(SARADC_DEV_NAME, &status, (unsigned int)&adc_desc);
+    bk_printf("tkl_adc call adc\n"); 
     if ((DD_HANDLE_UNVALID == adc_hdl) || (SARADC_SUCCESS != status))
     {
         if (SARADC_SUCCESS != status)

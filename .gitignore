@@ -19,3 +19,4 @@ CatalogKconfig
 
 /beken_os/.app
 *.build/
+beken_os/tools/generate/*.rbl

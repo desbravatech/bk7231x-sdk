@@ -138,8 +138,9 @@ echo "Start Combined"
 cp ${APP_BIN_DIR}/${APP_BIN_NAME}_${APP_VERSION}.bin tools/generate/
 
 cd tools/generate/
-./${ENCRYPT} ${APP_BIN_NAME}_${APP_VERSION}.bin 510fb093 a3cbeadc 5993a17e c7adeb03 10000
-${PYTHON} mpytools.py bk7231n_bootloader_enc.bin ${APP_BIN_NAME}_${APP_VERSION}_enc.bin
+# ./${ENCRYPT} ${APP_BIN_NAME}_${APP_VERSION}.bin 510fb093 a3cbeadc 5993a17e c7adeb03 10000
+#${PYTHON} mpytools.py bk7231n_bootloader_enc.bin ${APP_BIN_NAME}_${APP_VERSION}_enc.bin
+${PYTHON} mpytools.py bk7231n_bootloader.bin ${APP_BIN_NAME}_${APP_VERSION}.bin
 
 ./${BEKEN_PACK} config.json
 
@@ -147,18 +148,21 @@ echo "End Combined"
 cp all_1.00.bin ${APP_BIN_NAME}_QIO_${APP_VERSION}.bin
 rm all_1.00.bin
 
-cp ${APP_BIN_NAME}_${APP_VERSION}_enc_uart_1.00.bin ${APP_BIN_NAME}_UA_${APP_VERSION}.bin
-rm ${APP_BIN_NAME}_${APP_VERSION}_enc_uart_1.00.bin
+#cp ${APP_BIN_NAME}_${APP_VERSION}_enc_uart_1.00.bin ${APP_BIN_NAME}_UA_${APP_VERSION}.bin
+#rm ${APP_BIN_NAME}_${APP_VERSION}_enc_uart_1.00.bin
+cp ${APP_BIN_NAME}_${APP_VERSION}_uart_1.00.bin ${APP_BIN_NAME}_UA_${APP_VERSION}.bin
+rm ${APP_BIN_NAME}_${APP_VERSION}_uart_1.00.bin
 
 #generate ota file
 echo "generate ota file"
 ./${RT_OTA_PACK_TOOL} -f ${APP_BIN_NAME}_${APP_VERSION}.bin -v $CURRENT_TIME -o ${APP_BIN_NAME}_${APP_VERSION}.rbl -p app -c gzip -s aes -k 0123456789ABCDEF0123456789ABCDEF -i 0123456789ABCDEF
 ./${TY_PACKAGE} ${APP_BIN_NAME}_${APP_VERSION}.rbl ${APP_BIN_NAME}_UG_${APP_VERSION}.bin $APP_VERSION 
-rm ${APP_BIN_NAME}_${APP_VERSION}.rbl
-rm ${APP_BIN_NAME}_${APP_VERSION}.bin
-rm ${APP_BIN_NAME}_${APP_VERSION}.cpr
-rm ${APP_BIN_NAME}_${APP_VERSION}.out
-rm ${APP_BIN_NAME}_${APP_VERSION}_enc.bin
+# rm ${APP_BIN_NAME}_${APP_VERSION}.rbl || true
+# rm ${APP_BIN_NAME}_${APP_VERSION}.bin || true
+# rm ${APP_BIN_NAME}_${APP_VERSION}.cpr || true
+# rm ${APP_BIN_NAME}_${APP_VERSION}.out || true
+# rm ${APP_BIN_NAME}_${APP_VERSION}_enc.bin || true
+# rm ${APP_BIN_NAME}_${APP_VERSION}.bin || true
 
 echo "ug_file size:"
 ls -l ${APP_BIN_NAME}_UG_${APP_VERSION}.bin | awk '{print $5}'
@@ -168,6 +172,7 @@ if [ `ls -l ${APP_BIN_NAME}_UG_${APP_VERSION}.bin | awk '{print $5}'` -gt 679936
 	rm ${APP_BIN_NAME}_UG_${APP_VERSION}.bin
 	rm ${APP_BIN_NAME}_UA_${APP_VERSION}.bin
 	rm ${APP_BIN_NAME}_QIO_${APP_VERSION}.bin
+	rm ${APP_BIN_NAME}_${APP_VERSION}.rbl
 	exit 1
 fi
 
@@ -186,6 +191,7 @@ fi
 cp ${APP_BIN_NAME}_UG_${APP_VERSION}.bin  ${APP_BIN_DIR}/${APP_BIN_NAME}_UG_${APP_VERSION}.bin
 cp ${APP_BIN_NAME}_UA_${APP_VERSION}.bin  ${APP_BIN_DIR}/${APP_BIN_NAME}_UA_${APP_VERSION}.bin
 cp ${APP_BIN_NAME}_QIO_${APP_VERSION}.bin ${APP_BIN_DIR}/${APP_BIN_NAME}_QIO_${APP_VERSION}.bin
+cp ${APP_BIN_NAME}_${APP_VERSION}.rbl ${APP_BIN_DIR}/${APP_BIN_NAME}_${APP_VERSION}.rbl
 
 echo ""
 

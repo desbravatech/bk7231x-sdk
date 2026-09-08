@@ -9,14 +9,16 @@ out_json = {
     "count": 4,
     "section": [
         {
-            "firmware": "bk7231n_bootloader_enc.bin",
+            #"firmware": "bk7231n_bootloader_enc.bin",
+            "firmware": "bk7231n_bootloader.bin",
             "version": "1.00",
             "partition": "bootloader",
             "start_addr": "0x00000000",
             "size": "68K"
         },
         {
-            "firmware": "bk7231_common_1.0.1_enc.bin",
+            #"firmware": "bk7231_common_1.0.1_enc.bin",
+            "firmware": "bk7231_common_1.0.1.bin",
             "version": "1.00",
             "partition": "app",
             "start_addr": "0x00011000",

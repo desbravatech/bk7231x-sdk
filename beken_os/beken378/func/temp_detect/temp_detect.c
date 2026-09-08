@@ -204,6 +204,7 @@ static UINT32 temp_detect_open(void)
 
     GLOBAL_INT_DISABLE();
     tmp_detect_hdl = ddev_open(SARADC_DEV_NAME, &status, (UINT32)&tmp_detect_desc);
+    bk_printf("temp_detect call adc\n");
     if ((DD_HANDLE_UNVALID == tmp_detect_hdl) || (SARADC_SUCCESS != status))
     {
         if (SARADC_SUCCESS != status)
@@ -574,6 +575,7 @@ static UINT32 temp_single_get_enable(void)
 #endif // (CFG_SOC_NAME == SOC_BK7231)
     GLOBAL_INT_DISABLE();
     tmp_single_hdl = ddev_open(SARADC_DEV_NAME, &status, (UINT32)&tmp_single_desc);
+    bk_printf("temp_detect call adc\n");
     if(DD_HANDLE_UNVALID == tmp_single_hdl)
     {
         GLOBAL_INT_RESTORE();

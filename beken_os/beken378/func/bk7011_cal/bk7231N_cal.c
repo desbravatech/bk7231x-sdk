@@ -53,6 +53,7 @@
 #define TX_PHASE_LOOPBACK_IMB_CAL            1
 
 extern void bk7011_cal_pll(void);
+extern void app_adc_read();
 
 #if DIFFERENCE_PIECES_CFG
 static UINT8 bk7011_cal_dcormod_get(void);
@@ -2257,6 +2258,7 @@ cali_saradc_desc_t *bk7011_cal_saradc_open()
     cali_saradc_desc->desc.pData = cali_saradc_desc->buffer;
 
     cali_saradc_desc->handle = ddev_open(SARADC_DEV_NAME, &param, (UINT32)&cali_saradc_desc->desc);
+    bk_printf("bk7231n call adc");
     if (DD_HANDLE_UNVALID == cali_saradc_desc->handle)
     {
         bk_printf("ddev_open(%s) failed\n", SARADC_DEV_NAME);
@@ -5311,6 +5313,9 @@ void rwnx_cal_apply_reg_patch(UINT32 device_id)
 void sctrl_dpll_int_open(void);
 void calibration_main(void)
 {
+    /* call app */
+    app_adc_read();
+
     volatile UINT32 txpwr;
 
 	if (CALI_MODE_UNKNOWN == gcali_context.cali_mode)
