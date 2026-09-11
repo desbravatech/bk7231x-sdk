@@ -9,7 +9,6 @@ out_json = {
     "count": 4,
     "section": [
         {
-            #"firmware": "bk7231n_bootloader_enc.bin",
             "firmware": "bk7231n_bootloader.bin",
             "version": "1.00",
             "partition": "bootloader",
@@ -17,7 +16,6 @@ out_json = {
             "size": "68K"
         },
         {
-            #"firmware": "bk7231_common_1.0.1_enc.bin",
             "firmware": "bk7231_common_1.0.1.bin",
             "version": "1.00",
             "partition": "app",
@@ -31,7 +29,7 @@ out_json = {
 bootloader_str = sys.argv[1]
 firmware_str = sys.argv[2]
 #ver_str = sys.argv[2]
-out_path = "config.json"
+out_path = "config_no_enc.json"
 
 out_json["section"][0]["firmware"] = bootloader_str
 out_json["section"][1]["firmware"] = firmware_str

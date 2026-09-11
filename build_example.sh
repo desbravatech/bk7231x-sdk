@@ -138,18 +138,25 @@ echo "Start Combined"
 cp ${APP_BIN_DIR}/${APP_BIN_NAME}_${APP_VERSION}.bin tools/generate/
 
 cd tools/generate/
-# ./${ENCRYPT} ${APP_BIN_NAME}_${APP_VERSION}.bin 510fb093 a3cbeadc 5993a17e c7adeb03 10000
-#${PYTHON} mpytools.py bk7231n_bootloader_enc.bin ${APP_BIN_NAME}_${APP_VERSION}_enc.bin
-${PYTHON} mpytools.py bk7231n_bootloader.bin ${APP_BIN_NAME}_${APP_VERSION}.bin
+./${ENCRYPT} ${APP_BIN_NAME}_${APP_VERSION}.bin 510fb093 a3cbeadc 5993a17e c7adeb03 10000
+${PYTHON} mpytools_enc.py bk7231n_bootloader_enc.bin ${APP_BIN_NAME}_${APP_VERSION}_enc.bin
 
-./${BEKEN_PACK} config.json
+./${BEKEN_PACK} config_enc.json
 
-echo "End Combined"
+echo "End Combined Enc"
+cp all_1.00.bin ${APP_BIN_NAME}_QIO_ENC_${APP_VERSION}.bin
+rm all_1.00.bin
+
+${PYTHON} mpytools_no_enc.py bk7231n_bootloader.bin ${APP_BIN_NAME}_${APP_VERSION}.bin
+
+./${BEKEN_PACK} config_no_enc.json
+
+echo "End Combined No Enc"
 cp all_1.00.bin ${APP_BIN_NAME}_QIO_${APP_VERSION}.bin
 rm all_1.00.bin
 
-#cp ${APP_BIN_NAME}_${APP_VERSION}_enc_uart_1.00.bin ${APP_BIN_NAME}_UA_${APP_VERSION}.bin
-#rm ${APP_BIN_NAME}_${APP_VERSION}_enc_uart_1.00.bin
+cp ${APP_BIN_NAME}_${APP_VERSION}_enc_uart_1.00.bin ${APP_BIN_NAME}_UA_ENC_${APP_VERSION}.bin
+rm ${APP_BIN_NAME}_${APP_VERSION}_enc_uart_1.00.bin
 cp ${APP_BIN_NAME}_${APP_VERSION}_uart_1.00.bin ${APP_BIN_NAME}_UA_${APP_VERSION}.bin
 rm ${APP_BIN_NAME}_${APP_VERSION}_uart_1.00.bin
 
@@ -157,55 +164,31 @@ rm ${APP_BIN_NAME}_${APP_VERSION}_uart_1.00.bin
 echo "generate ota file"
 ./${RT_OTA_PACK_TOOL} -f ${APP_BIN_NAME}_${APP_VERSION}.bin -v $CURRENT_TIME -o ${APP_BIN_NAME}_${APP_VERSION}.rbl -p app -c gzip -s aes -k 0123456789ABCDEF0123456789ABCDEF -i 0123456789ABCDEF
 ./${TY_PACKAGE} ${APP_BIN_NAME}_${APP_VERSION}.rbl ${APP_BIN_NAME}_UG_${APP_VERSION}.bin $APP_VERSION 
-# rm ${APP_BIN_NAME}_${APP_VERSION}.rbl || true
-# rm ${APP_BIN_NAME}_${APP_VERSION}.bin || true
-# rm ${APP_BIN_NAME}_${APP_VERSION}.cpr || true
-# rm ${APP_BIN_NAME}_${APP_VERSION}.out || true
-# rm ${APP_BIN_NAME}_${APP_VERSION}_enc.bin || true
-# rm ${APP_BIN_NAME}_${APP_VERSION}.bin || true
+
+rm ${APP_BIN_NAME}_${APP_VERSION}.bin
+rm ${APP_BIN_NAME}_${APP_VERSION}_enc.bin
+rm ${APP_BIN_NAME}_${APP_VERSION}.cpr
+#rm ${APP_BIN_NAME}_${APP_VERSION}.out
 
 echo "ug_file size:"
 ls -l ${APP_BIN_NAME}_UG_${APP_VERSION}.bin | awk '{print $5}'
 if [ `ls -l ${APP_BIN_NAME}_UG_${APP_VERSION}.bin | awk '{print $5}'` -gt 679936 ];then
 	echo "**********************${APP_BIN_NAME}_$APP_VERSION.bin***************"
 	echo "************************** too large ********************************"
-	rm ${APP_BIN_NAME}_UG_${APP_VERSION}.bin
+	rm ${APP_BIN_NAME}_UA_ENC_${APP_VERSION}.bin 
 	rm ${APP_BIN_NAME}_UA_${APP_VERSION}.bin
+	rm ${APP_BIN_NAME}_QIO_ENC_${APP_VERSION}.bin
 	rm ${APP_BIN_NAME}_QIO_${APP_VERSION}.bin
+	rm ${APP_BIN_NAME}_UG_${APP_VERSION}.bin
 	rm ${APP_BIN_NAME}_${APP_VERSION}.rbl
 	exit 1
 fi
 
-if [ -f combine.sh ]; then
-	# TOTAL_ADDR=$((16#200000))
-	# START_ADDR=$((16#0))
-	# ATE_ADDR=$((16#132000))
-
- #    bash combine.sh QIO_no_ate $TOTAL_ADDR ${APP_BIN_NAME}_QIO_${APP_VERSION}.bin $START_ADDR bk7231n_ate $ATE_ADDR
-	bash combine.sh QIO_no_ate 2097152 ${APP_BIN_NAME}_QIO_${APP_VERSION}.bin 0 bk7231n_ate 1253376
-	cp QIO_no_ate ${APP_BIN_NAME}_QIO_${APP_VERSION}.bin
-	rm QIO_no_ate
-fi
-
-# echo "$(pwd)"
-cp ${APP_BIN_NAME}_UG_${APP_VERSION}.bin  ${APP_BIN_DIR}/${APP_BIN_NAME}_UG_${APP_VERSION}.bin
+cp ${APP_BIN_NAME}_UA_ENC_${APP_VERSION}.bin  ${APP_BIN_DIR}/${APP_BIN_NAME}_UA_ENC_${APP_VERSION}.bin
 cp ${APP_BIN_NAME}_UA_${APP_VERSION}.bin  ${APP_BIN_DIR}/${APP_BIN_NAME}_UA_${APP_VERSION}.bin
+cp ${APP_BIN_NAME}_QIO_ENC_${APP_VERSION}.bin ${APP_BIN_DIR}/${APP_BIN_NAME}_QIO_ENC_${APP_VERSION}.bin
 cp ${APP_BIN_NAME}_QIO_${APP_VERSION}.bin ${APP_BIN_DIR}/${APP_BIN_NAME}_QIO_${APP_VERSION}.bin
+cp ${APP_BIN_NAME}_UG_${APP_VERSION}.bin  ${APP_BIN_DIR}/${APP_BIN_NAME}_UG_${APP_VERSION}.bin
 cp ${APP_BIN_NAME}_${APP_VERSION}.rbl ${APP_BIN_DIR}/${APP_BIN_NAME}_${APP_VERSION}.rbl
 
-echo ""
-
-echo "###################################################################################################################"
-echo "Project ${APP_BIN_NAME} build complete. To flash, run this command:"
-if [ $SYSTEM = "Linux" ]; then
-	echo "${TYUTOOL_DIR}/cli write -d bk7231n -p [Port] -b [Baudrate] -f ${APP_BIN_DIR}/${APP_BIN_NAME}_QIO_${APP_VERSION}.bin"
-	echo "Port: /dev/ttyACM0 or /dev/ttyUSB0 ..."
-else
-	echo "${TYUTOOL_DIR}/cli.exe write -d bk7231n -p [Port] -b [Baudrate] -f ${APP_BIN_DIR}/${APP_BIN_NAME}_QIO_${APP_VERSION}.bin"
-	echo "Port: COM3 or COM4 ..."
-fi
-echo "Baudrate: 921600 or 1500000 or 2000000 ..."
-echo ""
-echo "Flash tool user manual at ${TYUTOOL_DIR}/README.md"
-echo "###################################################################################################################"
-echo ""
+echo "build complete"
